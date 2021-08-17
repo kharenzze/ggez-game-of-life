@@ -28,6 +28,7 @@ impl EventHandler<GameError> for MainState {
 
   fn draw(&mut self, ctx: &mut ggez::Context) -> GameResult {
     graphics::clear(ctx, Color::BLACK);
+    self.grid.draw(ctx);
     graphics::present(ctx)?;
     timer::yield_now();
     Ok(())
