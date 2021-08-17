@@ -2,7 +2,7 @@ use simple_logger::{SimpleLogger};
 use glam::*;
 use log::{LevelFilter, info};
 use ggez::*;
-use pathfind::game::MainState;
+use ggez_gol::game::MainState;
 
 const RES_1080: Vec2 = const_vec2!([1920.0, 1080.0]);
 
@@ -31,7 +31,7 @@ fn main() {
     .build()
     .expect("Could not create ggez context!");
 
-  let state = MainState{};
+  let state = MainState::new();
 
   event::run(ctx, event_loop, state);
 }

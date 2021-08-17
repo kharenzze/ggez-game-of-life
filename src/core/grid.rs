@@ -7,6 +7,7 @@ type Pt = IVec2;
 pub struct Grid {
   dim: Pt,
   matrix: Matrix,
+  show_grid: bool
 }
 
 impl Grid {
@@ -15,7 +16,7 @@ impl Grid {
     let matrix: Matrix = (0..dim.x)
       .map(get_row)
       .collect();
-    Self { dim, matrix }
+    Self { dim, matrix, show_grid: true }
   }
 
   pub fn cell_at(&self, pt: Pt) -> Option<&Cell> {

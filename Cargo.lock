@@ -831,6 +831,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ggez-gol"
+version = "0.1.0"
+dependencies = [
+ "ggez",
+ "glam",
+ "log",
+ "simple_logger",
+]
+
+[[package]]
 name = "gif"
 version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1785,16 +1795,6 @@ dependencies = [
  "redox_syscall",
  "smallvec",
  "winapi 0.3.9",
-]
-
-[[package]]
-name = "pathfind"
-version = "0.1.0"
-dependencies = [
- "ggez",
- "glam",
- "log",
- "simple_logger",
 ]
 
 [[package]]
