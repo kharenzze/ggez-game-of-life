@@ -1,5 +1,6 @@
 use std::ops::RangeInclusive;
 
+use ggez::{Context, GameResult};
 use glam::*;
 
 type Matrix = Vec<Vec<Cell>>;
@@ -37,6 +38,10 @@ impl Grid {
         _RNG.map(move |j| Pt::from([i, j]) + pt)
       })
       .filter(move |p| self.in_range(*p) && p.ne(&pt))
+  }
+
+  pub fn draw(&self, ctx: &Context) -> GameResult {
+    Ok(())
   }
 }
 
