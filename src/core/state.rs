@@ -1,8 +1,8 @@
 use ggez::error::{GameError, GameResult};
 use ggez::event::{EventHandler, KeyCode, KeyMods, MouseButton};
 use ggez::graphics::Color;
-use ggez::*;
 use super::grid::Grid;
+use ggez::*;
 use glam::*;
 
 pub struct MainState {
@@ -12,7 +12,7 @@ pub struct MainState {
 impl MainState {
   pub fn new() -> Self {
     Self {
-      grid: Grid::new(IVec2::from([80, 45]))
+      grid: Grid::new(IVec2::from([16, 9]) * 3)
     }
   }
 }
