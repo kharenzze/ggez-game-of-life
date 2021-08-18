@@ -15,6 +15,7 @@ pub struct Grid {
   mode: GameMode,
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum GameMode {
   Initialization,
   Playing,
@@ -111,7 +112,7 @@ impl Grid {
   }
 
   pub fn handle_mouse_click(&mut self, ctx: &mut Context, button: MouseButton, pos: Vec2) {
-    if button != MouseButton::Left {
+    if button != MouseButton::Left || self.mode != GameMode::Initialization {
       return
     }
     let win_size = inner_size(ctx);
