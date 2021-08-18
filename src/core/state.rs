@@ -12,7 +12,7 @@ pub struct MainState {
 impl MainState {
   pub fn new() -> Self {
     Self {
-      grid: Grid::new(IVec2::from([160, 90]))
+      grid: Grid::new(IVec2::from([80, 45]))
     }
   }
 }
@@ -28,7 +28,7 @@ impl EventHandler<GameError> for MainState {
 
   fn draw(&mut self, ctx: &mut ggez::Context) -> GameResult {
     graphics::clear(ctx, Color::BLACK);
-    self.grid.draw(ctx);
+    self.grid.draw(ctx)?;
     graphics::present(ctx)?;
     timer::yield_now();
     Ok(())
