@@ -34,9 +34,9 @@ impl EventHandler<GameError> for MainState {
     Ok(())
   }
 
-  fn mouse_button_down_event(&mut self, _ctx: &mut Context, _button: MouseButton, x: f32, y: f32) {
+  fn mouse_button_down_event(&mut self, ctx: &mut Context, button: MouseButton, x: f32, y: f32) {
     let pos = Vec2::from([x, y]);
-    //
+    self.grid.handle_mouse_click(ctx, button, pos);
   }
 
   fn key_down_event(

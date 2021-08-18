@@ -95,6 +95,13 @@ impl Grid {
       _ => (())
     }
   }
+
+  pub fn handle_mouse_click(&mut self, ctx: &mut Context, button: MouseButton, pos: Vec2) {
+    if button != MouseButton::Left {
+      return
+    }
+    
+  }
 }
 
 #[derive(Debug)]
