@@ -100,7 +100,11 @@ impl Grid {
     if button != MouseButton::Left {
       return
     }
-    
+    let win_size = inner_size(ctx);
+    let cell_pt = self.map_screen_to_grid(win_size, pos);
+    if let Some(cell) = self.cell_at(cell_pt) {
+      cell.
+    }
   }
 }
 
@@ -130,6 +134,13 @@ impl Cell {
       y: size.y * self.pos.y as f32,
       h: size.x,
       w: size.y,
+    }
+  }
+
+  fn toggle(&mut self) {
+    self.state = match self.state {
+      CellState::Alive => CellState::Dead,
+      CellState::Dead => CellState::Alive,
     }
   }
 }
