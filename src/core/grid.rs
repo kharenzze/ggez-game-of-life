@@ -32,6 +32,13 @@ impl Grid {
     None
   }
 
+  pub fn mut_cell_at(&mut self, pt: Pt) -> Option<&mut Cell> {
+    if self.in_range(pt) {
+      return Some(&mut self.matrix[pt.x as usize][pt.y as usize]);
+    }
+    None
+  }
+
   pub fn in_range(&self, pt: Pt) -> bool {
     Pt::ZERO.cmple(pt).all() && pt.cmplt(self.dim).all()
   }
@@ -102,15 +109,15 @@ impl Grid {
     }
     let win_size = inner_size(ctx);
     let cell_pt = self.map_screen_to_grid(win_size, pos);
-    if let Some(cell) = self.cell_at(cell_pt) {
-      cell.
+    if let Some(cell) = self.mut_cell_at(cell_pt) {
+      cell.toggle();
     }
   }
 }
 
 #[derive(Debug)]
 pub struct Cell {
-  state: CellState,
+  state: CellState, 
   pos: Pt,
 }
 
