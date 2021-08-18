@@ -1,9 +1,9 @@
 use ggez::error::{GameError, GameResult};
-use ggez::event::EventHandler;
+use ggez::event::{EventHandler, KeyCode, KeyMods, MouseButton};
 use ggez::graphics::Color;
 use ggez::*;
 use super::grid::Grid;
-use glam::IVec2;
+use glam::*;
 
 pub struct MainState {
   grid: Grid
@@ -32,5 +32,24 @@ impl EventHandler<GameError> for MainState {
     graphics::present(ctx)?;
     timer::yield_now();
     Ok(())
+  }
+
+  fn mouse_button_down_event(&mut self, _ctx: &mut Context, _button: MouseButton, x: f32, y: f32) {
+    let pos = Vec2::from([x, y]);
+    //
+  }
+
+  fn key_down_event(
+    &mut self,
+    ctx: &mut Context,
+    keycode: KeyCode,
+    _keymod: KeyMods,
+    _repeat: bool,
+  ) {
+    //
+  }
+
+  fn key_up_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
+    //
   }
 }
