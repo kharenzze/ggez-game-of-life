@@ -43,10 +43,20 @@ impl Grid {
       .filter(move |p| self.in_range(*p) && p.ne(&pt))
   }
 
+  fn map_screen_to_grid(&self, win_size: Vec2, pos: Vec2) -> Pt {
+    let cell_size = self.cell_size(win_size);
+    let relative_pos = pos / cell_size;
+    relative_pos.as_i32()
+  }
+
+  fn cell_size(&self, win_size: Vec2) -> Vec2 {
+    let grid_size = self.dim.as_f32();
+    win_size / grid_size
+  }
+
   pub fn draw(&self, ctx: &mut Context) -> GameResult {
     let win_size = inner_size(ctx);
-    let grid_size = Vec2::new(self.dim.x as f32, self.dim.y as f32);
-    let cell_size = win_size / grid_size;
+    let cell_size = self.cell_size(win_size);
     let mut mb = graphics::MeshBuilder::new();
 
     for col in &self.matrix {
@@ -156,5 +166,18 @@ mod tests {
     assert_eq!(points.len(), 8);
     let points: Vec<Pt> = grid.points_arround(Pt::from([0, 1])).collect();
     assert_eq!(points.len(), 5);
+  }
+
+  #[test]
+  fn map_screen_to_grid() {
+    let grid = grid();
+    let win_size = Vec2::from([100.0, 100.0]);
+    let pos = Vec2::from([1.0, 1.0]);
+    let x = grid.map_screen_to_grid(win_size, pos);
+    assert_eq!(x, Pt::from([0, 0]));
+
+    let pos = Vec2::from([99.0, 99.0]);
+    let x = grid.map_screen_to_grid(win_size, pos);
+    assert_eq!(x, Pt::from([9, 9]));
   }
 }
