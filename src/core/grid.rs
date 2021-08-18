@@ -12,6 +12,12 @@ pub struct Grid {
   dim: Pt,
   matrix: Matrix,
   show_grid: bool,
+  mode: GameMode,
+}
+
+pub enum GameMode {
+  Initialization,
+  Playing,
 }
 
 impl Grid {
@@ -22,6 +28,7 @@ impl Grid {
       dim,
       matrix,
       show_grid: true,
+      mode: GameMode::Initialization,
     }
   }
 
