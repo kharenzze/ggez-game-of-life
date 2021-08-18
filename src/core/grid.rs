@@ -1,4 +1,5 @@
 use super::utils::inner_size;
+use ggez::event::*;
 use ggez::graphics::{Color, DrawMode, Rect, DrawParam};
 use ggez::{graphics, Context, GameResult};
 use glam::*;
@@ -64,6 +65,25 @@ impl Grid {
     let mesh = mb.build(ctx)?;
     graphics::draw(ctx, &mesh, DrawParam::default())?;
     Ok(())
+  }
+
+  fn toggle_show_grid(&mut self) {
+    self.show_grid = !self.show_grid;
+  }
+
+  pub fn handle_key_press(
+    &mut self,
+    _ctx: &mut Context,
+    keycode: KeyCode,
+    _keymod: KeyMods,
+    _repeat: bool,
+  ) {
+    match keycode {
+      KeyCode::G => {
+        self.toggle_show_grid();
+      }
+      _ => (())
+    }
   }
 }
 

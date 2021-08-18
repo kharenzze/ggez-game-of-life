@@ -43,10 +43,10 @@ impl EventHandler<GameError> for MainState {
     &mut self,
     ctx: &mut Context,
     keycode: KeyCode,
-    _keymod: KeyMods,
-    _repeat: bool,
+    keymod: KeyMods,
+    repeat: bool,
   ) {
-    //
+    self.grid.handle_key_press(ctx, keycode, keymod, repeat);
   }
 
   fn key_up_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
