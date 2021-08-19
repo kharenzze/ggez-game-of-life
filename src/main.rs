@@ -12,6 +12,10 @@ const AUTHOR: &str = "Author";
 const GAME_ID: &str = "GAME_ID";
 
 fn main() {
+
+  let args: Vec<String> = std::env::args().collect();
+  let filename: Option<String> = args.first().cloned();
+
   SimpleLogger::new()
     .with_colors(true)
     .with_level(LevelFilter::Error)
@@ -36,7 +40,7 @@ fn main() {
     .build()
     .expect("Could not create ggez context!");
 
-  let state = MainState::new();
+  let state = MainState::new(filename);
 
   event::run(ctx, event_loop, state);
 }

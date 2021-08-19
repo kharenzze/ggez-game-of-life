@@ -6,13 +6,13 @@ use ggez::*;
 use glam::*;
 
 pub struct MainState {
-  grid: Grid
+  grid: Grid,
 }
 
 impl MainState {
-  pub fn new() -> Self {
+  pub fn new(filename: Option<String>) -> Self {
     Self {
-      grid: Grid::new(IVec2::from([16, 9]) * 3)
+      grid: Grid::new(IVec2::from([16, 9]) * 3),
     }
   }
 }
