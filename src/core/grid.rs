@@ -26,9 +26,13 @@ pub enum GameMode {
 }
 
 impl Grid {
-  pub fn new(dim: Pt) -> Self {
+  fn get_empty_matrix(dim: Pt) -> Matrix {
     let get_row = |x: i32| (0..dim.y).map(|y| Cell::new(Pt::from([x, y]))).collect();
     let matrix: Matrix = (0..dim.x).map(get_row).collect();
+    matrix
+  }
+  pub fn new(dim: Pt) -> Self {
+    let matrix = Self::get_empty_matrix(dim);
     Self {
       dim,
       matrix_next: matrix.to_vec(),
@@ -98,11 +102,9 @@ impl Grid {
     for col in &self.matrix {
       for cell in col {
         let rect = cell.to_rect(cell_size);
-        let color = match cell.state {
-          CellState::Alive => Color::GREEN,
-          CellState::Dead => Color::BLACK,
-        };
-        mb.rectangle(DrawMode::fill(), rect, color)?;
+        if cell.state == CellState::Alive {
+          mb.rectangle(DrawMode::fill(), rect, Color::GREEN)?;
+        }
         if self.show_grid {
           mb.rectangle(DrawMode::stroke(1.0), rect, Color::WHITE)?;
         }
@@ -132,7 +134,7 @@ impl Grid {
             value
           })
           .sum();
-          cell.state = self.cell_at(cell.pos).unwrap().state.calc_next(around);
+        cell.state = self.cell_at(cell.pos).unwrap().state.calc_next(around);
       }
     }
     std::mem::swap(&mut next, &mut self.matrix_next);
@@ -142,6 +144,12 @@ impl Grid {
     self.mode = match self.mode {
       GameMode::Initialization => GameMode::Playing,
       GameMode::Playing => GameMode::Initialization,
+    }
+  }
+
+  fn reset(&mut self) {
+    if self.mode != GameMode::Playing {
+      self.matrix = Self::get_empty_matrix(self.dim);
     }
   }
 
@@ -158,6 +166,9 @@ impl Grid {
       }
       KeyCode::P => {
         self.toggle_play();
+      }
+      KeyCode::R => {
+        self.reset();
       }
       _ => (()),
     }
@@ -309,8 +320,13 @@ mod tests {
 
     grid.compute_next();
     for i in 0..3 {
-      assert_eq!(grid.matrix_next[i][1].state, CellState::Alive, "{} {}", i, 1);
+      assert_eq!(
+        grid.matrix_next[i][1].state,
+        CellState::Alive,
+        "{} {}",
+        i,
+        1
+      );
     }
-
   }
 }
