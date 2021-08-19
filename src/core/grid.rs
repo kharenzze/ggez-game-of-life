@@ -123,8 +123,11 @@ impl Grid {
     next
   }
 
-  fn start(&mut self) {
-    self.mode = GameMode::Playing;
+  fn toggle_play(&mut self) {
+    self.mode = match self.mode {
+      GameMode::Initialization => GameMode::Playing,
+      GameMode::Playing => GameMode::Initialization,
+    }
   }
 
   pub fn handle_key_press(
@@ -139,7 +142,7 @@ impl Grid {
         self.toggle_show_grid();
       }
       KeyCode::P => {
-        self.start();
+        self.toggle_play();
       }
       _ => (()),
     }
