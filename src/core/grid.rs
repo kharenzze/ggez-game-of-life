@@ -4,6 +4,7 @@ use ggez::graphics::{Color, DrawMode, DrawParam, Rect};
 use ggez::{graphics, Context, GameResult};
 use glam::*;
 use std::ops::RangeInclusive;
+use std::time::Instant;
 
 #[allow(unused_imports)]
 use log::*;
@@ -78,15 +79,18 @@ impl Grid {
   }
 
   pub fn update(&mut self, _ctx: &mut Context) -> GameResult {
+    let now = Instant::now();
     if self.mode != GameMode::Playing {
       return Ok(());
     }
     self.compute_next();
     self.toggle_matrices();
+    info!("Update:\t{}us", now.elapsed().as_micros());
     Ok(())
   }
 
   pub fn draw(&self, ctx: &mut Context) -> GameResult {
+    let now = Instant::now();
     let win_size = inner_size(ctx);
     let cell_size = self.cell_size(win_size);
     let mut mb = graphics::MeshBuilder::new();
@@ -106,6 +110,7 @@ impl Grid {
     }
     let mesh = mb.build(ctx)?;
     graphics::draw(ctx, &mesh, DrawParam::default())?;
+    info!("Draw:\t{}us", now.elapsed().as_micros());
     Ok(())
   }
 
