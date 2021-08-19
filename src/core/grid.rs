@@ -3,8 +3,10 @@ use ggez::event::*;
 use ggez::graphics::{Color, DrawMode, DrawParam, Rect};
 use ggez::{graphics, Context, GameResult};
 use glam::*;
-use log::*;
 use std::ops::RangeInclusive;
+
+#[allow(unused_imports)]
+use log::*;
 
 type Matrix = Vec<Vec<Cell>>;
 type Pt = IVec2;
@@ -120,11 +122,12 @@ impl Grid {
           .points_around(cell.pos)
           .map(|p| {
             let current = self.cell_at(p).unwrap();
+            assert_eq!(current.pos, p);
             let value: i32 = current.state.into();
             value
           })
           .sum();
-        cell.state = cell.state.calc_next(around);
+          cell.state = self.cell_at(cell.pos).unwrap().state.calc_next(around);
       }
     }
     std::mem::swap(&mut next, &mut self.matrix_next);
@@ -174,12 +177,6 @@ pub struct Cell {
 }
 
 impl Cell {
-  pub fn pos(&self) -> Pt {
-    self.pos
-  }
-}
-
-impl Cell {
   fn new(pos: Pt) -> Self {
     Self {
       state: CellState::Dead,
@@ -204,7 +201,7 @@ impl Cell {
   }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum CellState {
   Dead,
   Alive,
@@ -252,7 +249,7 @@ mod tests {
   fn creation() {
     let grid = grid();
     let cell = grid.cell_at(Pt::from([0, 0])).unwrap();
-    assert_eq!(cell.pos(), Pt::from([0, 0]));
+    assert_eq!(cell.pos, Pt::from([0, 0]));
   }
 
   #[test]
@@ -295,5 +292,20 @@ mod tests {
     b[0][0] = 7;
     println!("{:?}", &a);
     println!("{:?}", &b);
+  }
+
+  #[test]
+  fn generation() {
+    let dim = Pt::from([3, 3]);
+    let mut grid = Grid::new(dim);
+    for c in &mut grid.matrix[1] {
+      c.state = CellState::Alive;
+    }
+
+    grid.compute_next();
+    for i in 0..3 {
+      assert_eq!(grid.matrix_next[i][1].state, CellState::Alive, "{} {}", i, 1);
+    }
+
   }
 }

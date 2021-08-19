@@ -19,7 +19,7 @@ impl MainState {
 
 impl EventHandler<GameError> for MainState {
   fn update(&mut self, ctx: &mut ggez::Context) -> GameResult {
-    const TARGET_FPS: u32 = 5;
+    const TARGET_FPS: u32 = 10;
     while timer::check_update_time(ctx, TARGET_FPS) {
       self.grid.update(ctx)?;
     }
@@ -49,7 +49,7 @@ impl EventHandler<GameError> for MainState {
     self.grid.handle_key_press(ctx, keycode, keymod, repeat);
   }
 
-  fn key_up_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
+  fn key_up_event(&mut self, _ctx: &mut Context, _keycode: KeyCode, _keymods: KeyMods) {
     //
   }
 }
