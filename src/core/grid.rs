@@ -51,7 +51,7 @@ impl Grid {
     Pt::ZERO.cmple(pt).all() && pt.cmplt(self.dim).all()
   }
 
-  pub fn points_arround<'a>(&'a self, pt: Pt) -> impl Iterator<Item = Pt> + 'a {
+  pub fn points_around<'a>(&'a self, pt: Pt) -> impl Iterator<Item = Pt> + 'a {
     const _RNG: RangeInclusive<i32> = -1..=1;
     _RNG
       .flat_map(move |i| _RNG.map(move |j| Pt::from([i, j]) + pt))
@@ -96,6 +96,22 @@ impl Grid {
     self.show_grid = !self.show_grid;
   }
 
+  fn compute_next(&self) -> Matrix {
+    let mut next = self.matrix.to_vec();
+    for col in &mut next {
+      for cell in col {
+        let around: i32 = self.points_around(cell.pos).map(move |p| {
+          let current = self.cell_at(p).unwrap();
+          let value: i32 = current.state.into();
+          value
+        })
+        .sum();
+        cell.state = cell.state.calc_next(around);
+      }
+    }
+    next
+  }
+
   pub fn handle_key_press(
     &mut self,
     _ctx: &mut Context,
@@ -123,7 +139,7 @@ impl Grid {
   }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Cell {
   state: CellState, 
   pos: Pt,
@@ -160,10 +176,40 @@ impl Cell {
   }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 enum CellState {
   Dead,
   Alive,
+}
+
+impl CellState {
+  fn calc_next(&self, around: i32) -> Self {
+    match self {
+      &CellState::Alive => {
+        if around == 2 || around == 3 {
+          CellState::Alive
+        } else {
+          CellState::Dead
+        }
+      },
+      &CellState::Dead => {
+        if around == 3 {
+          CellState::Alive
+        } else {
+          CellState::Dead
+        }
+      }
+    }
+  }
+}
+
+impl From<CellState> for i32 {
+  fn from(c: CellState) -> Self {
+    match c {
+      CellState::Alive => 1,
+      CellState::Dead => 0,
+    }
+  }
 }
 
 #[cfg(test)]
@@ -193,11 +239,11 @@ mod tests {
   #[test]
   fn points_arround() {
     let grid = grid();
-    let points: Vec<Pt> = grid.points_arround(Pt::from([0, 0])).collect();
+    let points: Vec<Pt> = grid.points_around(Pt::from([0, 0])).collect();
     assert_eq!(points.len(), 3);
-    let points: Vec<Pt> = grid.points_arround(Pt::from([5, 5])).collect();
+    let points: Vec<Pt> = grid.points_around(Pt::from([5, 5])).collect();
     assert_eq!(points.len(), 8);
-    let points: Vec<Pt> = grid.points_arround(Pt::from([0, 1])).collect();
+    let points: Vec<Pt> = grid.points_around(Pt::from([0, 1])).collect();
     assert_eq!(points.len(), 5);
   }
 
@@ -212,5 +258,14 @@ mod tests {
     let pos = Vec2::from([99.0, 99.0]);
     let x = grid.map_screen_to_grid(win_size, pos);
     assert_eq!(x, Pt::from([9, 9]));
+  }
+
+  #[test]
+  fn vec() {
+    let a = vec![vec![1,2,3]];
+    let mut b = a.to_vec();
+    b[0][0] = 7;
+    println!("{:?}", &a);
+    println!("{:?}", &b);
   }
 }
