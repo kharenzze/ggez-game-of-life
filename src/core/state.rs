@@ -19,7 +19,7 @@ impl MainState {
 
 impl EventHandler<GameError> for MainState {
   fn update(&mut self, ctx: &mut ggez::Context) -> GameResult {
-    const TARGET_FPS: u32 = 60;
+    const TARGET_FPS: u32 = 5;
     while timer::check_update_time(ctx, TARGET_FPS) {
       self.grid.update(ctx)?;
     }
