@@ -112,6 +112,10 @@ impl Grid {
     next
   }
 
+  fn start(&mut self) {
+    self.mode = GameMode::Playing;
+  }
+
   pub fn handle_key_press(
     &mut self,
     _ctx: &mut Context,
@@ -122,6 +126,9 @@ impl Grid {
     match keycode {
       KeyCode::G => {
         self.toggle_show_grid();
+      }
+      KeyCode::P => {
+        self.start();
       }
       _ => (())
     }
