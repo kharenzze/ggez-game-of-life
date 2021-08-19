@@ -1,6 +1,6 @@
 use super::utils::inner_size;
 use ggez::event::*;
-use ggez::graphics::{Color, DrawMode, Rect, DrawParam};
+use ggez::graphics::{Color, DrawMode, DrawParam, Rect};
 use ggez::{graphics, Context, GameResult};
 use glam::*;
 use log::*;
@@ -69,6 +69,15 @@ impl Grid {
     win_size / grid_size
   }
 
+  pub fn update(&mut self, _ctx: &mut Context) -> GameResult {
+    if self.mode != GameMode::Playing {
+      return Ok(());
+    }
+    let next = self.compute_next();
+    self.matrix = next;
+    Ok(())
+  }
+
   pub fn draw(&self, ctx: &mut Context) -> GameResult {
     let win_size = inner_size(ctx);
     let cell_size = self.cell_size(win_size);
@@ -100,12 +109,14 @@ impl Grid {
     let mut next = self.matrix.to_vec();
     for col in &mut next {
       for cell in col {
-        let around: i32 = self.points_around(cell.pos).map(move |p| {
-          let current = self.cell_at(p).unwrap();
-          let value: i32 = current.state.into();
-          value
-        })
-        .sum();
+        let around: i32 = self
+          .points_around(cell.pos)
+          .map(move |p| {
+            let current = self.cell_at(p).unwrap();
+            let value: i32 = current.state.into();
+            value
+          })
+          .sum();
         cell.state = cell.state.calc_next(around);
       }
     }
@@ -130,13 +141,13 @@ impl Grid {
       KeyCode::P => {
         self.start();
       }
-      _ => (())
+      _ => (()),
     }
   }
 
   pub fn handle_mouse_click(&mut self, ctx: &mut Context, button: MouseButton, pos: Vec2) {
     if button != MouseButton::Left || self.mode != GameMode::Initialization {
-      return
+      return;
     }
     let win_size = inner_size(ctx);
     let cell_pt = self.map_screen_to_grid(win_size, pos);
@@ -148,7 +159,7 @@ impl Grid {
 
 #[derive(Debug, Clone)]
 pub struct Cell {
-  state: CellState, 
+  state: CellState,
   pos: Pt,
 }
 
@@ -198,7 +209,7 @@ impl CellState {
         } else {
           CellState::Dead
         }
-      },
+      }
       &CellState::Dead => {
         if around == 3 {
           CellState::Alive
@@ -269,7 +280,7 @@ mod tests {
 
   #[test]
   fn vec() {
-    let a = vec![vec![1,2,3]];
+    let a = vec![vec![1, 2, 3]];
     let mut b = a.to_vec();
     b[0][0] = 7;
     println!("{:?}", &a);

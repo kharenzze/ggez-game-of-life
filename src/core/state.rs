@@ -21,7 +21,7 @@ impl EventHandler<GameError> for MainState {
   fn update(&mut self, ctx: &mut ggez::Context) -> GameResult {
     const TARGET_FPS: u32 = 60;
     while timer::check_update_time(ctx, TARGET_FPS) {
-      //update objs
+      self.grid.update(ctx)?;
     }
     Ok(())
   }
