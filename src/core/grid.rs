@@ -11,6 +11,7 @@ type Pt = IVec2;
 pub struct Grid {
   dim: Pt,
   matrix: Matrix,
+  matrix_next: Matrix,
   show_grid: bool,
   mode: GameMode,
 }
@@ -27,6 +28,7 @@ impl Grid {
     let matrix: Matrix = (0..dim.x).map(get_row).collect();
     Self {
       dim,
+      matrix_next: matrix.to_vec(),
       matrix,
       show_grid: true,
       mode: GameMode::Initialization,
@@ -69,12 +71,16 @@ impl Grid {
     win_size / grid_size
   }
 
+  fn toggle_matrices(&mut self) {
+    std::mem::swap(&mut self.matrix_next, &mut self.matrix);
+  }
+
   pub fn update(&mut self, _ctx: &mut Context) -> GameResult {
     if self.mode != GameMode::Playing {
       return Ok(());
     }
-    let next = self.compute_next();
-    self.matrix = next;
+    self.compute_next();
+    self.toggle_matrices();
     Ok(())
   }
 
@@ -105,13 +111,14 @@ impl Grid {
     self.show_grid = !self.show_grid;
   }
 
-  fn compute_next(&self) -> Matrix {
-    let mut next = self.matrix.to_vec();
+  fn compute_next(&mut self) {
+    let mut next: Matrix = vec![vec![]];
+    std::mem::swap(&mut next, &mut self.matrix_next);
     for col in &mut next {
       for cell in col {
         let around: i32 = self
           .points_around(cell.pos)
-          .map(move |p| {
+          .map(|p| {
             let current = self.cell_at(p).unwrap();
             let value: i32 = current.state.into();
             value
@@ -120,7 +127,7 @@ impl Grid {
         cell.state = cell.state.calc_next(around);
       }
     }
-    next
+    std::mem::swap(&mut next, &mut self.matrix_next);
   }
 
   fn toggle_play(&mut self) {
